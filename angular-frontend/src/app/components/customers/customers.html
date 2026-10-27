@@ -1,0 +1,60 @@
+
+<div class="customers-container">
+
+  <div class="page-header">
+    <div>
+      <h1>Gestion des clients</h1>
+      <p>Liste des clients du microservice Customer</p>
+    </div>
+
+    <button type="button" (click)="loadCustomers()">
+      Actualiser
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      Chargement des clients...
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (!loading() && !errorMessage()) {
+
+    <div class="table-card">
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (customer of customers(); track customer.id) {
+            <tr>
+              <td>{{ customer.id }}</td>
+              <td>{{ customer.name }}</td>
+              <td>{{ customer.email }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (customers().length === 0) {
+        <p class="empty">
+          Aucun client disponible.
+        </p>
+      }
+
+    </div>
+  }
+
+</div>

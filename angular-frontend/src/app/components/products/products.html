@@ -1,0 +1,57 @@
+
+<div class="products-container">
+
+  <div class="page-header">
+    <div>
+      <h1>Gestion des produits</h1>
+      <p>Liste des produits du microservice Inventory</p>
+    </div>
+
+    <button type="button" (click)="loadProducts()">
+      Actualiser
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      Chargement des produits...
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (!loading() && !errorMessage()) {
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Produit</th>
+            <th>Prix (MAD)</th>
+            <th>Quantité</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr>
+              <td>{{ product.id }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.price | number:'1.2-2' }} DH</td>
+              <td>{{ product.quantity }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (products().length === 0) {
+        <p class="empty">Aucun produit disponible.</p>
+      }
+    </div>
+  }
+
+</div>

@@ -1,0 +1,77 @@
+
+<div class="bills-container">
+
+  <div class="page-header">
+    <div>
+      <h1>Gestion des factures</h1>
+      <p>Liste des factures du microservice Billing</p>
+    </div>
+
+    <button type="button" (click)="loadBills()">
+      Actualiser
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      Chargement des factures...
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (!loading() && !errorMessage()) {
+
+    @for (bill of bills(); track bill.id) {
+      <div class="bill-card">
+
+        <div class="bill-header">
+          <h2>Facture #{{ bill.id }}</h2>
+          <span>{{ bill.billingDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <p>
+          <strong>Client :</strong>
+          {{ bill.customer?.name || 'Client #' + bill.customerId }}
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Prix unitaire</th>
+              <th>Sous-total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (item of bill.productItems ?? []; track item.id) {
+              <tr>
+                <td>{{ item.product?.name || 'Produit #' + item.productId }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price | number:'1.2-2' }} DH</td>
+                <td>{{ item.price * item.quantity | number:'1.2-2' }} DH</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="bill-total">
+          Total : {{ calculateTotal(bill) | number:'1.2-2' }} DH
+        </div>
+
+      </div>
+    }
+
+    @if (bills().length === 0) {
+      <p class="empty">Aucune facture disponible.</p>
+    }
+
+  }
+
+</div>

@@ -1,23 +1,16 @@
-﻿# Maven
+﻿# Java / Maven
 **/target/
+*.log
 
-# IntelliJ IDEA
-**/.idea/
+# IntelliJ
+.idea/
 *.iml
 
-# VS Code
-**/.vscode/
+# Angular / Node.js
+**/node_modules/
+**/dist/
+**/.angular/
 
-# Logs
-*.log
-logs/
-
-# Windows
-Thumbs.db
-.DS_Store
-
-# Secrets
+# Environment files
 .env
 .env.*
-**/application-local.properties
-**/application-secret.properties
