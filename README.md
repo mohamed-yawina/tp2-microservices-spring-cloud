@@ -1,366 +1,212 @@
 
-# TP2 — Architecture Microservices avec Spring Cloud et Angular
+# TP2 — Architecture Microservices avec Spring Boot et Spring Cloud
 
-## Description
+## Présentation
 
-Ce projet consiste à développer une application distribuée basée sur une architecture microservices avec Spring Boot et Spring Cloud.
+Ce projet a été réalisé dans le cadre du TP2 Spring Boot et Spring Cloud.
 
-L'application comprend plusieurs microservices indépendants, un serveur de découverte Eureka, un serveur de configuration centralisée, une API Gateway et une interface frontend développée avec Angular 22.
+L'objectif est de développer une application de gestion des clients, des produits et des factures en utilisant une architecture microservices.
 
-Le projet permet de gérer les clients, les produits et les factures.
+L'application comprend plusieurs services backend développés avec Spring Boot et une interface frontend développée avec Angular.
 
 ## Technologies utilisées
 
-### Backend
-
 - Java 17
 - Spring Boot 3.3.5
-- Spring Cloud 2023.0.3
-- Spring Cloud Netflix Eureka
-- Spring Cloud Config Server
+- Spring Cloud
 - Spring Cloud Gateway
+- Netflix Eureka Discovery Server
+- Spring Cloud Config Server
 - Spring Data JPA
-- Spring Cloud OpenFeign
-- Spring Cloud LoadBalancer
 - H2 Database
-- Maven
-
-### Frontend
-
-- Angular 22
+- Angular
 - TypeScript
-- HTML5
-- CSS3
-- Angular Signals
-- Angular Router
-- Angular HttpClient
-- Node.js
-- npm
-
-### Outils
-
-- IntelliJ IDEA
-- Visual Studio Code
+- Maven
 - Git et GitHub
-- PowerShell
 
 ## Architecture du projet
 
 ```text
-                  Angular Frontend
-                  localhost:4200
-                         |
-                         v
-                  API Gateway
-                  localhost:8888
-                         |
-          +--------------+--------------+
-          |              |              |
-          v              v              v
-   Customer Service  Inventory Service  Billing Service
-    localhost:8081    localhost:8082    localhost:8083
-          |              |              |
-          v              v              v
-      H2 Database    H2 Database    H2 Database
+                Angular Frontend
+                 localhost:4200
+                       |
+                       v
+              Spring Cloud Gateway
+                 localhost:8888
+                       |
+          +------------+------------+
+          |            |            |
+          v            v            v
+    Customer       Inventory      Billing
+    Service        Service        Service
+    :8081          :8082          :8083
 
+              Eureka Discovery
+                localhost:8761
 
-             Eureka Discovery Server
-                  localhost:8761
-
-              Spring Config Server
-                  localhost:9999
-                         |
-                         v
-                    config-repo
+             Spring Config Server
+                localhost:9999
 ```
 
-Le microservice Billing utilise OpenFeign pour communiquer avec Customer Service et Inventory Service.
+## Microservices
 
-## Microservices développés
-
-| Microservice | Port | Description |
-|--------------|------|-------------|
-| Discovery Service | 8761 | Enregistrement et découverte des services avec Eureka |
-| Config Service | 9999 | Centralisation des configurations |
+| Service | Port | Description |
+|---------|------|-------------|
+| Config Service | 9999 | Gestion centralisée de la configuration |
+| Discovery Service | 8761 | Enregistrement et découverte des services |
+| Gateway Service | 8888 | Point d'entrée des API |
 | Customer Service | 8081 | Gestion des clients |
 | Inventory Service | 8082 | Gestion des produits |
 | Billing Service | 8083 | Gestion des factures |
-| Gateway Service | 8888 | Point d'entrée des API |
-
-## Structure du projet
-
-```text
-tp2-microservices-spring-cloud/
-│
-├── discovery-service/
-├── config-service/
-├── customer-service/
-├── inventory-service/
-├── billing-service/
-├── gateway-service/
-│
-├── config-repo/
-│   ├── customer-service.properties
-│   ├── inventory-service.properties
-│   ├── billing-service.properties
-│   └── gateway-service.properties
-│
-├── angular-frontend/
-│   ├── src/
-│   │   └── app/
-│   │       ├── components/
-│   │       │   ├── customers/
-│   │       │   ├── products/
-│   │       │   ├── bills/
-│   │       │   └── navbar/
-│   │       ├── models/
-│   │       ├── services/
-│   │       ├── app.routes.ts
-│   │       └── app.config.ts
-│   ├── proxy.conf.json
-│   └── package.json
-│
-└── README.md
-```
+| Angular Frontend | 4200 | Interface utilisateur |
 
 ## Fonctionnalités
 
-### Customer Service
+### Gestion des clients
+- Consultation de la liste des clients
+- Communication avec Customer Service
+- Affichage des clients dans Angular
 
-- Consulter tous les clients
-- Consulter un client par identifiant
-- Stocker les clients dans H2
-- Enregistrement automatique dans Eureka
+### Gestion des produits
+- Consultation des produits
+- Communication avec Inventory Service
+- Affichage des produits dans Angular
 
-### Inventory Service
+### Gestion des factures
+- Consultation des factures
+- Communication avec Billing Service
+- Affichage des factures dans Angular
 
-- Consulter les produits
-- Consulter un produit par identifiant
-- Afficher les prix et les quantités
-- Stocker les produits dans H2
+### Architecture Spring Cloud
+- Découverte des microservices avec Eureka
+- Routage des requêtes via Spring Cloud Gateway
+- Configuration centralisée avec Spring Cloud Config
 
-### Billing Service
+## Captures d'écran
 
-- Consulter les factures
-- Consulter une facture par identifiant
-- Récupérer les informations des clients avec OpenFeign
-- Récupérer les informations des produits avec OpenFeign
-- Afficher les lignes et les montants des factures
+### 1. Eureka Discovery Server
 
-### API Gateway
+Tableau de bord Eureka permettant de visualiser les microservices enregistrés.
 
-- Centraliser les requêtes HTTP
-- Router les requêtes vers les microservices
-- Utiliser Eureka pour découvrir les services
-- Utiliser Spring Cloud LoadBalancer
+![Eureka Discovery](docs/screenshots/01-eureka.png)
 
-### Angular Frontend
+### 2. Customer Service — API REST
 
-- Affichage des clients
-- Affichage des produits
-- Affichage des factures
-- Navigation entre les pages
-- Chargement dynamique des données
-- Gestion des erreurs HTTP
-- Mise à jour réactive avec Angular Signals
+Test de récupération des clients via Spring Cloud Gateway.
+
+Endpoint testé :
+
+`GET http://localhost:8888/customer-service/customers`
+
+![Customer Service](docs/screenshots/02-customer-service.png)
+
+### 3. Interface Angular — Gestion des clients
+
+Affichage des clients dans l'application Angular.
+
+![Gestion des clients](docs/screenshots/03-Gestion_Clients.png)
+
+### 4. Interface Angular — Gestion des produits
+
+Affichage des produits dans l'application Angular.
+
+![Gestion des produits](docs/screenshots/04-Gestion_Produits.png)
+
+### 5. Interface Angular — Gestion des factures
+
+Affichage des factures dans l'application Angular.
+
+![Gestion des factures](docs/screenshots/05-Gestion_Factures.png)
 
 ## Installation et exécution
 
 ### Prérequis
 
 - JDK 17
-- Node.js
-- npm
-- Angular CLI
+- Maven ou Maven Wrapper
+- Node.js et npm
 - Git
-- Maven Wrapper
 
-### 1. Cloner le projet
+### 1. Cloner le dépôt
 
 ```bash
 git clone https://github.com/mohamed-yawina/tp2-microservices-spring-cloud.git
-
 cd tp2-microservices-spring-cloud
 ```
 
 ### 2. Démarrer les microservices
 
-Ouvrir un terminal pour chaque microservice.
+Démarrer chaque service dans un terminal séparé, en respectant l'ordre suivant :
 
-Ordre de démarrage recommandé :
-
-1. Discovery Service
-2. Config Service
+1. Config Service
+2. Discovery Service
 3. Customer Service
 4. Inventory Service
 5. Billing Service
 6. Gateway Service
 
-Exemple sous Windows :
+Exemple pour Customer Service :
 
 ```powershell
-cd discovery-service
+cd customer-service
 .\mvnw.cmd spring-boot:run
 ```
 
-Répéter la commande dans le dossier de chaque service.
+Répéter cette opération dans le dossier de chaque service.
 
-Vérifier que Java 17 est utilisé pour les services Spring Boot.
-
-### 3. Vérifier Eureka
-
-Accéder à :
-
-http://localhost:8761
-
-Vérifier que les microservices sont enregistrés avec le statut UP.
-
-### 4. Démarrer Angular
-
-Dans un nouveau terminal :
+### 3. Démarrer Angular
 
 ```powershell
 cd angular-frontend
-
 npm install
-
-ng serve --proxy-config proxy.conf.json --open
+npm start -- --proxy-config proxy.conf.json
 ```
 
-L'application sera accessible à :
+L'application est accessible à l'adresse :
 
 http://localhost:4200
 
-## Endpoints REST
+## Vérification
 
-### Customer Service
+### Eureka Dashboard
 
-| Méthode | URL | Description |
-|---------|-----|-------------|
-| GET | /customers | Liste des clients |
-| GET | /customers/{id} | Client par ID |
+http://localhost:8761
 
-### Inventory Service
+### Customer Service via Gateway
 
-| Méthode | URL | Description |
-|---------|-----|-------------|
-| GET | /products | Liste des produits |
-| GET | /products/{id} | Produit par ID |
+http://localhost:8888/customer-service/customers
 
-### Billing Service
+### Interface Angular
 
-| Méthode | URL | Description |
-|---------|-----|-------------|
-| GET | /bills | Liste des factures |
-| GET | /bills/{id} | Facture par ID |
+http://localhost:4200
 
-### API Gateway
-
-Toutes les API sont accessibles à travers le port 8888 :
+## Structure du projet
 
 ```text
-http://localhost:8888/customers
-http://localhost:8888/products
-http://localhost:8888/bills
+tp2-microservices-spring-cloud/
+|
+|-- config-service/
+|-- discovery-service/
+|-- customer-service/
+|-- inventory-service/
+|-- billing-service/
+|-- gateway-service/
+|-- angular-frontend/
+|-- docs/
+|   `-- screenshots/
+|       |-- 01-eureka.png
+|       |-- 02-customer-service.png
+|       |-- 03-Gestion_Clients.png
+|       |-- 04-Gestion_Produits.png
+|       `-- 05-Gestion_Factures.png
+|
+`-- README.md
 ```
-
-## Interface Angular
-
-### Page Customers
-
-URL :
-
-http://localhost:4200/customers
-
-Affiche la liste des clients avec :
-
-- Identifiant
-- Nom
-- Email
-
-### Page Products
-
-URL :
-
-http://localhost:4200/products
-
-Affiche les produits avec :
-
-- Identifiant
-- Nom
-- Prix
-- Quantité disponible
-
-### Page Bills
-
-URL :
-
-http://localhost:4200/bills
-
-Affiche les factures avec :
-
-- Identifiant de la facture
-- Date
-- Client
-- Produits achetés
-- Quantités
-- Prix
-- Montant total
-
-## Communication Frontend / Backend
-
-Le frontend Angular communique avec les microservices à travers Spring Cloud Gateway.
-
-```text
-Angular
-   |
-   v
-Angular Development Proxy
-   |
-   v
-Spring Cloud Gateway
-   |
-   v
-Microservices Spring Boot
-   |
-   v
-H2 Databases
-```
-
-Le fichier `proxy.conf.json` permet de rediriger les requêtes `/api` vers la Gateway pendant le développement.
-
-## Compilation Angular
-
-Pour générer une version de production :
-
-```bash
-cd angular-frontend
-
-ng build
-```
-
-Les fichiers compilés sont générés dans le dossier `dist/`.
-
-Le proxy de développement Angular n'est pas automatiquement inclus dans le build de production. Un déploiement réel nécessite une configuration adaptée pour accéder aux API.
-
-## Objectifs pédagogiques
-
-- Comprendre les architectures microservices
-- Utiliser Spring Boot et Spring Cloud
-- Mettre en place Eureka Discovery
-- Centraliser les configurations avec Config Server
-- Configurer une API Gateway
-- Communiquer entre microservices avec OpenFeign
-- Utiliser Spring Data JPA et H2
-- Développer un frontend Angular
-- Consommer des API REST avec HttpClient
-- Utiliser Angular Signals pour les interfaces réactives
 
 ## Auteur
 
 **Mohamed Yawina**
 
-Projet réalisé dans le cadre du TP2 :
-**Implémentation d'une architecture micro-services**
+Étudiant en dernière année du cycle d'ingénieur en informatique à l'EMSI.
 
-Encadrant : **Pr. Mohamed YOUSSFI**
+Projet académique — Spring Boot & Spring Cloud.
